@@ -1,0 +1,10 @@
+Package: mmcc
+Title: R Functions used in McClelland Lab, University of California, Irvine
+Version: 0.0.0.9000
+Authors@R: person("Zijin", "Wang", role = c("aut", "cre"), email = "zijinw@uci.edu")
+Description: These R functions are written specially to be used in data manipulation and analysis for McClelland Lab in UC Irvine.
+Depends: R (>= 3.3.3)
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1
