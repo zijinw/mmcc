@@ -162,6 +162,82 @@ DESeq2_FisherPvalue_Twopair <- function(filepath, rawdatafile, outputname, num.i
     anno <- merge(anno, p.df[[i]], all.x = TRUE)
   }
   
+  anno <- anno[,c(1,2,5,3,6,4,7,8,11,9,12,10,13,14,17,15,18,16,19)]
+  for (i in 1:nrow(anno)){
+    if(!is.na(anno[i,2])){
+      minFisherOut1 <- min(anno[i,2], anno[i,3])
+      minZOut1 <- min(anno[i,4], anno[i,5])
+      minZweightOut1 <- min(anno[i,6], anno[i,7])
+      minFisherOut2 <- min(anno[i,8], anno[i,9])
+      minZOut2 <- min(anno[i,10], anno[i,11])
+      minZweightOut2 <- min(anno[i,12], anno[i,13])
+      minFisherOut1Out2 <- min(anno[i,14], anno[i,15])
+      minZOut1Out2 <- min(anno[i,16], anno[i,17])
+      minZweightOut1Out2 <- min(anno[i,18], anno[i,19])
+      
+      if(minFisherOut1 == anno[i,2]){
+        anno[i,3] <- "R"
+      }else{
+        anno[i,2] <- minFisherOut1
+        anno[i,3] <- "L"
+      }
+      if(minZOut1 == anno[i,4]){
+        anno[i,5] <- "R"
+      }else{
+        anno[i,4] <- minZOut1
+        anno[i,5] <- "L"
+      }
+      if(minZweightOut1 == anno[i,6]){
+        anno[i,7] <- "R"
+      }else{
+        anno[i,6] <- minZweightOut1
+        anno[i,7] <- "L"
+      }
+      
+      if(minFisherOut2 == anno[i,8]){
+        anno[i,9] <- "R"
+      }else{
+        anno[i,8] <- minFisherOut2
+        anno[i,9] <- "L"
+      }
+      if(minZOut2 == anno[i,10]){
+        anno[i,11] <- "R"
+      }else{
+        anno[i,10] <- minZOut2
+        anno[i,11] <- "L"
+      }
+      if(minZweightOut2 == anno[i,12]){
+        anno[i,13] <- "R"
+      }else{
+        anno[i,12] <- minZweightOut2
+        anno[i,13] <- "L"
+      }
+      
+      if(minFisherOut1Out2 == anno[i,14]){
+        anno[i,15] <- "R"
+      }else{
+        anno[i,14] <- minFisherOut1Out2
+        anno[i,15] <- "L"
+      }
+      if(minZOut1Out2 == anno[i,16]){
+        anno[i,17] <- "R"
+      }else{
+        anno[i,16] <- minZOut1Out2
+        anno[i,17] <- "L"
+      }
+      if(minZweightOut1Out2 == anno[i,18]){
+        anno[i,19] <- "R"
+      }else{
+        anno[i,18] <- minZweightOut1Out2
+        anno[i,19] <- "L"
+      }
+    }
+  }
+  
+  colnames(anno) <- c("Locus_Tag", paste(name.out1,"Fisher"), "Tail", paste(name.out1,"Z test"), "Tail", paste(name.out1,"Z with weight"), "Tail"
+                      , paste(name.out2,"Fisher"), "Tail", paste(name.out2,"Z test"), "Tail", paste(name.out2,"Z with weight"), "Tail"
+                      , paste(name.out1,"vs",name.out2,"Fisher"), "Tail", paste(name.out1,"vs",name.out2,"Z test"), "Tail", paste(name.out1,"vs",name.out2,"Z with weight"), "Tail")
+  
   #### Now we have get the result of input vs output1, input vs output2, output1
   #### vs output2 for every gene
 
@@ -207,7 +283,7 @@ DESeq2_FisherPvalue_Twopair <- function(filepath, rawdatafile, outputname, num.i
   result.presum <- cbind(output2.out1, output2.out2, output2.out3)
   result.presum <- result.presum[,c(1:5,7:10,12:15)]
 
-  result <- merge(anno,result.presum, all.x = TRUE)
+  result <- merge(anno, result.presum, all.x = TRUE)
 
   write.csv(result,paste0(outputname,".csv"))
 }

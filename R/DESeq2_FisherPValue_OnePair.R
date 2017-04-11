@@ -185,7 +185,7 @@ DESeq2_FisherPvalue_Onepair <- function(filepath, rawdatafile, outputname, num.i
   output2 <- data.frame(output2)
   output2[,2:5] <- sapply(sapply(output2[,2:5], as.character), as.numeric)
 
-  result <- merge(anno,output2, all.x = TRUE)
+  result <- merge(anno, output2, all.x = TRUE)
 
   write.csv(result,paste0(outputname,".csv")) ## You can replace the "output" with another name!
 }
