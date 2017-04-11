@@ -33,6 +33,6 @@ This function should be used on a raw data with the following layout:
    of columns in each output can be any number.
 }
 \examples{
-DESeq2_FisherPvalue_Onepair(filepath = "C:/Users/", rawdatafile = "rawdata.xlsx", outputname = "output", num.in = 3, num.out = 3, name.out = "A vs B")
+DESeq2_FisherPvalue_Onepair_Padj(filepath = "C:/Users/", rawdatafile = "rawdata.xlsx", outputname = "output", num.in = 3, num.out = 3, name.out = "A vs B")
 }
 \keyword{mmcc}
