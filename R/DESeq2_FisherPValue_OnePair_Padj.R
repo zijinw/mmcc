@@ -18,7 +18,7 @@
 #' @param name.out The prefix of columns in the output. For example, "A vs B" or "B vs C", in which "A". "B" and "C" represent the names of input and output in the raw data file.
 #' @keywords mmcc
 #' @export
-#' @examples DESeq2_FisherPvalue_Onepair(filepath = "C:/Users/", rawdatafile = "rawdata.xlsx", outputname = "output", num.in = 3, num.out = 3, name.out = "A vs B")
+#' @examples DESeq2_FisherPvalue_Onepair_Padj(filepath = "C:/Users/", rawdatafile = "rawdata.xlsx", outputname = "output", num.in = 3, num.out = 3, name.out = "A vs B")
 
 DESeq2_FisherPvalue_Onepair_Padj <- function(filepath, rawdatafile, outputname, num.in, num.out, name.out){
   setwd(filepath)
