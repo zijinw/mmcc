@@ -1,9 +1,6 @@
-#' Combine P values for one pair of input and output
+#' Combine Adjusted P values for one pair of input and output
 #' 
-#' This function is used to: 
-#' 1. To the raw data, using DESeq2 to give the p values of input vesus output
-#' 2. Combine the p values in the output of DESeq2
-#' 3. To the raw data, pre-sum the count data group by locus_tag, and using DESeq2 to give the p values of input vesus output
+#' This function is a variation of function \link[mmcc]{DESeq2_FisherPvalue_Onepair}
 #' 
 #' This function should be used on a raw data with the following layout:
 #' 1. The first three columns must be "Feature", "Locus_Tag", "Strand"
@@ -23,7 +20,7 @@
 #' @export
 #' @examples DESeq2_FisherPvalue_Onepair(filepath = "C:/Users/", rawdatafile = "rawdata.xlsx", outputname = "output", num.in = 3, num.out = 3, name.out = "A vs B")
 
-DESeq2_FisherPvalue_Onepair <- function(filepath, rawdatafile, outputname, num.in, num.out, name.out){
+DESeq2_FisherPvalue_Onepair_Padj <- function(filepath, rawdatafile, outputname, num.in, num.out, name.out){
   setwd(filepath)
   if ("DESeq2" %in% rownames(installed.packages()) == FALSE){
 	source("https://bioconductor.org/biocLite.R")
@@ -76,15 +73,15 @@ DESeq2_FisherPvalue_Onepair <- function(filepath, rawdatafile, outputname, num.i
   
   df <- output
 
-  df$pvalue <- df$pvalue / 2
+  df$padj <- df$padj / 2
   df.trans_plus <- df
   df.trans_minus <- df
   for (j in 1:nrow(df)){
     if (!is.na(df[j,2])){
-      if (df[j,2] > 0 & !is.na(df[j,4])){
-        df.trans_plus[j, 4] <- 1 - df.trans_plus[j, 4]
-      }else if (df[j,2] < 0 & !is.na(df[j,4])){
-        df.trans_minus[j, 4] <- 1 - df.trans_minus[j, 4]
+      if (df[j,2] > 0 & !is.na(df[j,5])){
+        df.trans_plus[j, 5] <- 1 - df.trans_plus[j, 5]
+      }else if (df[j,2] < 0 & !is.na(df[j,5])){
+        df.trans_minus[j, 5] <- 1 - df.trans_minus[j, 5]
       }
     }
   }
@@ -99,9 +96,9 @@ DESeq2_FisherPvalue_Onepair <- function(filepath, rawdatafile, outputname, num.i
       set <- df2.trans_plus[[k]]
 	p.df.trans_plus[k,1] <- set[1,1]
 	set <- na.omit(set)
-      p.df.trans_plus[k,2] <- combine.test(set[,4], method = "fisher")
-      p.df.trans_plus[k,3] <- combine.test(set[,4], method = "z.transform")
-      p.df.trans_plus[k,4] <- combine.test(set[,4], weight = set[,6], method = "z.transform")
+      p.df.trans_plus[k,2] <- combine.test(set[,5], method = "fisher")
+      p.df.trans_plus[k,3] <- combine.test(set[,5], method = "z.transform")
+      p.df.trans_plus[k,4] <- combine.test(set[,5], weight = set[,6], method = "z.transform")
     }
     
     #########
@@ -112,9 +109,9 @@ DESeq2_FisherPvalue_Onepair <- function(filepath, rawdatafile, outputname, num.i
       set <- df2.trans_minus[[k]]
       p.df.trans_minus[k,1] <- set[1,1]
 	set <- na.omit(set)
-      p.df.trans_minus[k,2] <- combine.test(set[,4], method = "fisher")
-      p.df.trans_minus[k,3] <- combine.test(set[,4], method = "z.transform")
-      p.df.trans_minus[k,4] <- combine.test(set[,4], weight = set[,6], method = "z.transform")
+      p.df.trans_minus[k,2] <- combine.test(set[,5], method = "fisher")
+      p.df.trans_minus[k,3] <- combine.test(set[,5], method = "z.transform")
+      p.df.trans_minus[k,4] <- combine.test(set[,5], weight = set[,6], method = "z.transform")
     }
     
     #########
@@ -129,6 +126,7 @@ DESeq2_FisherPvalue_Onepair <- function(filepath, rawdatafile, outputname, num.i
   anno <- merge(anno, p.df, all.x = TRUE)
 
   anno <- anno[,c(1,2,5,3,6,4,7)]
+  anno1 <- anno
   for (i in 1:nrow(anno)){
 	if(!is.na(anno[i,2])){
 		minFisher <- min(anno[i,2],anno[i,3])
