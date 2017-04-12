@@ -168,12 +168,6 @@ DESeq2_FisherPvalue_Twopair <- function(filepath, rawdatafile, outputname, num.i
       minFisherOut1 <- min(anno[i,2], anno[i,3])
       minZOut1 <- min(anno[i,4], anno[i,5])
       minZweightOut1 <- min(anno[i,6], anno[i,7])
-      minFisherOut2 <- min(anno[i,8], anno[i,9])
-      minZOut2 <- min(anno[i,10], anno[i,11])
-      minZweightOut2 <- min(anno[i,12], anno[i,13])
-      minFisherOut1Out2 <- min(anno[i,14], anno[i,15])
-      minZOut1Out2 <- min(anno[i,16], anno[i,17])
-      minZweightOut1Out2 <- min(anno[i,18], anno[i,19])
       
       if(minFisherOut1 == anno[i,2]){
         anno[i,3] <- "R"
@@ -193,7 +187,12 @@ DESeq2_FisherPvalue_Twopair <- function(filepath, rawdatafile, outputname, num.i
         anno[i,6] <- minZweightOut1
         anno[i,7] <- "L"
       }
-      
+    }
+    if (!is.na(anno[i,8])){
+      minFisherOut2 <- min(anno[i,8], anno[i,9])
+      minZOut2 <- min(anno[i,10], anno[i,11])
+      minZweightOut2 <- min(anno[i,12], anno[i,13])
+
       if(minFisherOut2 == anno[i,8]){
         anno[i,9] <- "R"
       }else{
@@ -212,6 +211,11 @@ DESeq2_FisherPvalue_Twopair <- function(filepath, rawdatafile, outputname, num.i
         anno[i,12] <- minZweightOut2
         anno[i,13] <- "L"
       }
+    }
+    if(!is.na(anno[i,14])){
+      minFisherOut1Out2 <- min(anno[i,14], anno[i,15])
+      minZOut1Out2 <- min(anno[i,16], anno[i,17])
+      minZweightOut1Out2 <- min(anno[i,18], anno[i,19])
       
       if(minFisherOut1Out2 == anno[i,14]){
         anno[i,15] <- "R"
