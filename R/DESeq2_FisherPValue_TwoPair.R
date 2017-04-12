@@ -23,6 +23,7 @@
 #' @examples DESeq2_FisherPvalue_Twopair(filepath = "C:/Users/", rawdatafile = "rawdata.xlsx", outputname = "output", num.in = 3, num.out1 = 3, num.out2 = 3, name.out1 = "B1", name.out2 = "B2")
 
 DESeq2_FisherPvalue_Twopair <- function(filepath, rawdatafile, outputname, num.in, num.out1, num.out2, name.out1, name.out2){
+  options(scipen = 999)
   setwd(filepath)
   if ("DESeq2" %in% rownames(installed.packages()) == FALSE){
 	source("https://bioconductor.org/biocLite.R")
@@ -98,7 +99,7 @@ DESeq2_FisherPvalue_Twopair <- function(filepath, rawdatafile, outputname, num.i
 
   for (i in 1:3){
     df <- alldata[[i]]
-    df$pvalue <- df$pvalue / 2
+    df[,4] <- df[,4] / 2
     df.trans_plus <- df
     df.trans_minus <- df
     for (j in 1:nrow(df)){

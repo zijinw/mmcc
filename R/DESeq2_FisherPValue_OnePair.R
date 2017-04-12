@@ -24,6 +24,7 @@
 #' @examples DESeq2_FisherPvalue_Onepair(filepath = "C:/Users/", rawdatafile = "rawdata.xlsx", outputname = "output", num.in = 3, num.out = 3, name.out = "A vs B")
 
 DESeq2_FisherPvalue_Onepair <- function(filepath, rawdatafile, outputname, num.in, num.out, name.out){
+  options(scipen = 999)
   setwd(filepath)
   if ("DESeq2" %in% rownames(installed.packages()) == FALSE){
 	source("https://bioconductor.org/biocLite.R")
