@@ -4,17 +4,13 @@
 \alias{DESeq2_FisherPvalue_Onepair}
 \title{Combine P values for one pair of input and output}
 \usage{
-DESeq2_FisherPvalue_Onepair(filepath, rawdatafile, outputname.feature,
-  outputname.oligo, num.in, num.out, name.out = "Input vs Output")
+DESeq2_FisherPvalue_Onepair(filepath, rawdatafile, num.in, num.out,
+  name.out = "Input vs Output")
 }
 \arguments{
 \item{filepath}{The path of the raw data (excluding the data file itself). Remember to double quote the filepath.}
 
 \item{rawdatafile}{The name of the raw data file. Remember to double quote the rawdatafile, and add the ".xlsx" after the name of rawdatafile (It must be excel file)!}
-
-\item{outputname.feature}{The name of output file for each gene you want.}
-
-\item{outputname.oligo}{The name of output file for each oligo you want.}
 
 \item{num.in}{The number of input columns in the raw data file.}
 
