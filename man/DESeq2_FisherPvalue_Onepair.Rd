@@ -5,7 +5,7 @@
 \title{Combine P values for one pair of input and output}
 \usage{
 DESeq2_FisherPvalue_Onepair(filepath, rawdatafile, outputname.feature,
-  outputname.oligo, num.in, num.out, name.out)
+  outputname.oligo, num.in, num.out, name.out = "Input vs Output")
 }
 \arguments{
 \item{filepath}{The path of the raw data (excluding the data file itself). Remember to double quote the filepath.}

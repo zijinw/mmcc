@@ -4,15 +4,17 @@
 \alias{DESeq2_FisherPvalue_Twopair}
 \title{Combine P values for raw data with one input and two outputs}
 \usage{
-DESeq2_FisherPvalue_Twopair(filepath, rawdatafile, outputname, num.in, num.out1,
-  num.out2, name.out1, name.out2)
+DESeq2_FisherPvalue_Twopair(filepath, rawdatafile, outputname.feature,
+  outputname.oligo, num.in, num.out1, num.out2, name.out1, name.out2)
 }
 \arguments{
 \item{filepath}{The path of the raw data (excluding the data file itself). Remember to double quote the filepath.}
 
 \item{rawdatafile}{The name of the raw data file. Remember to double quote the rawdatafile, and add the ".xlsx" after the name of rawdatafile (It must be excel file)!}
 
-\item{outputname}{The name of output file you want.}
+\item{outputname.feature}{The name of output file for each gene you want.}
+
+\item{outputname.oligo}{The name of output file for each oligo you want.}
 
 \item{num.in}{The number of input columns in the raw data file.}
 
