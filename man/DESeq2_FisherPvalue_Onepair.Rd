@@ -16,7 +16,7 @@ DESeq2_FisherPvalue_Onepair(filepath, rawdatafile, num.in, num.out,
 
 \item{num.out}{The number of output columns in the raw data file.}
 
-\item{name.out}{The prefix of columns in the output. For example, "A vs B" or "B vs C", in which "A". "B" and "C" represent the names of input and output in the raw data file.}
+\item{name.out}{The prefix of columns in the output. For example, "A vs B" or "B vs C", in which "A". "B" and "C" represent the names of input and output in the raw data file. The default is "Input vs Output".}
 }
 \description{
 This function is used to: 

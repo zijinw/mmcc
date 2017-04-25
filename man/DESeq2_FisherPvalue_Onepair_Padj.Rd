@@ -4,23 +4,19 @@
 \alias{DESeq2_FisherPvalue_Onepair_Padj}
 \title{Combine Adjusted P values for one pair of input and output}
 \usage{
-DESeq2_FisherPvalue_Onepair_Padj(filepath, rawdatafile, outputname.feature,
-  outputname.oligo, num.in, num.out, name.out)
+DESeq2_FisherPvalue_Onepair_Padj(filepath, rawdatafile, num.in, num.out,
+  name.out = "Input vs Output")
 }
 \arguments{
 \item{filepath}{The path of the raw data (excluding the data file itself). Remember to double quote the filepath.}
 
 \item{rawdatafile}{The name of the raw data file. Remember to double quote the rawdatafile, and add the ".xlsx" after the name of rawdatafile (It must be excel file)!}
 
-\item{outputname.feature}{The name of output file for each gene you want.}
-
-\item{outputname.oligo}{The name of output file for each oligo you want.}
-
 \item{num.in}{The number of input columns in the raw data file.}
 
 \item{num.out}{The number of output columns in the raw data file.}
 
-\item{name.out}{The prefix of columns in the output. For example, "A vs B" or "B vs C", in which "A". "B" and "C" represent the names of input and output in the raw data file.}
+\item{name.out}{The prefix of columns in the output. For example, "A vs B" or "B vs C", in which "A". "B" and "C" represent the names of input and output in the raw data file. The default is "Input vs Output".}
 }
 \description{
 This function is a variation of function \link[mmcc]{DESeq2_FisherPvalue_Onepair}
@@ -35,6 +31,6 @@ This function should be used on a raw data with the following layout:
    of columns in each output can be any number.
 }
 \examples{
-DESeq2_FisherPvalue_Onepair_Padj(filepath = "C:/Users/", rawdatafile = "rawdata.xlsx", outputname = "output", num.in = 3, num.out = 3, name.out = "A vs B")
+DESeq2_FisherPvalue_Onepair_Padj(filepath = "C:/Users/", rawdatafile = "rawdata.xlsx", num.in = 3, num.out = 3, name.out = "Input vs Output")
 }
 \keyword{mmcc}
