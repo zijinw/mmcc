@@ -77,7 +77,8 @@ DESeq2_FisherPvalue_Onepair <- function(filepath, rawdatafile,
   output[,2:5] <- sapply(sapply(output[,2:5], as.character), as.numeric)
   output$weight <- 1/(output$lfcSE^2)
   
-  write.csv(output, paste0(outputname.oligo, "_oligo", "_in", as.character(num.in), "_out", as.character(num.out), ".csv"))
+  output.oligo <- cbind(data[,1],output)
+  write.csv(output.oligo, paste0(outputname.oligo, "_oligo", "_in", as.character(num.in), "_out", as.character(num.out), ".csv"))
   
   df <- output
 
