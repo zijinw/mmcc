@@ -20,7 +20,7 @@
 #' @param name.out The prefix of columns in the output. For example, "A vs B" or "B vs C", in which "A". "B" and "C" represent the names of input and output in the raw data file.
 #' @keywords mmcc
 #' @export
-#' @examples DESeq2_FisherPvalue_Onepair(filepath = "C:/Users/", rawdatafile = "rawdata.xlsx", outputname = "output", num.in = 3, num.out = 3, name.out = "A vs B")
+#' @examples DESeq2_FisherPvalue_Onepair(filepath = "C:/Users/", rawdatafile = "rawdata.xlsx", num.in = 3, num.out = 3, name.out = "Input vs Output")
 
 DESeq2_FisherPvalue_Onepair <- function(filepath, rawdatafile, 
                                         num.in, num.out, name.out = "Input vs Output"){
@@ -77,7 +77,7 @@ DESeq2_FisherPvalue_Onepair <- function(filepath, rawdatafile,
   output[,2:5] <- sapply(sapply(output[,2:5], as.character), as.numeric)
   output$weight <- 1/(output$lfcSE^2)
   
-  write.csv(output, paste0(outputname.oligo, "_in", as.character(num.in), "_out", as.character(num.out), ".csv"))
+  write.csv(output, paste0(outputname.oligo, "_oligo", "_in", as.character(num.in), "_out", as.character(num.out), ".csv"))
   
   df <- output
 
@@ -192,6 +192,6 @@ DESeq2_FisherPvalue_Onepair <- function(filepath, rawdatafile,
 
   result <- merge(anno, output2, all.x = TRUE)
 
-  write.csv(result,paste0(outputname.feature,"_in", as.character(num.in), "_out", as.character(num.out), ".csv")) ## You can replace the "output" with another name!
+  write.csv(result,paste0(outputname.feature,"_feature", "_in", as.character(num.in), "_out", as.character(num.out), ".csv")) ## You can replace the "output" with another name!
   }
 
