@@ -15,8 +15,6 @@
 #' 
 #' @param filepath  The path of the raw data (excluding the data file itself). Remember to double quote the filepath.
 #' @param rawdatafile The name of the raw data file. Remember to double quote the rawdatafile, and add the ".xlsx" after the name of rawdatafile (It must be excel file)!
-#' @param outputname.feature The name of output file for each gene you want.
-#' @param outputname.oligo The name of output file for each oligo you want.
 #' @param num.in The number of input columns in the raw data file.
 #' @param num.out The number of output columns in the raw data file.
 #' @param name.out The prefix of columns in the output. For example, "A vs B" or "B vs C", in which "A". "B" and "C" represent the names of input and output in the raw data file.
@@ -24,9 +22,11 @@
 #' @export
 #' @examples DESeq2_FisherPvalue_Onepair(filepath = "C:/Users/", rawdatafile = "rawdata.xlsx", outputname = "output", num.in = 3, num.out = 3, name.out = "A vs B")
 
-DESeq2_FisherPvalue_Onepair <- function(filepath, rawdatafile, outputname.feature,
-                                        outputname.oligo, num.in, num.out, name.out = "Input vs Output"){
+DESeq2_FisherPvalue_Onepair <- function(filepath, rawdatafile, 
+                                        num.in, num.out, name.out = "Input vs Output"){
   options(scipen = 999)
+  outputname.feature <- substr(rawdatafile, 1, gregexpr("\\.xlsx", rawdatafile)[[1]][1] - 1)
+  outputname.oligo <- substr(rawdatafile, 1, gregexpr("\\.xlsx", rawdatafile)[[1]][1] - 1)
   setwd(filepath)
   if ("DESeq2" %in% rownames(installed.packages()) == FALSE){
 	source("https://bioconductor.org/biocLite.R")
@@ -77,7 +77,7 @@ DESeq2_FisherPvalue_Onepair <- function(filepath, rawdatafile, outputname.featur
   output[,2:5] <- sapply(sapply(output[,2:5], as.character), as.numeric)
   output$weight <- 1/(output$lfcSE^2)
   
-  write.csv(output, paste0(output.oligo, "_in", as.character(num.in), "_out", as.character(num.out), ".csv"))
+  write.csv(output, paste0(outputname.oligo, "_in", as.character(num.in), "_out", as.character(num.out), ".csv"))
   
   df <- output
 
