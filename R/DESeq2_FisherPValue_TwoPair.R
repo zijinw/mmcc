@@ -17,14 +17,17 @@
 #' @param num.in The number of input columns in the raw data file.
 #' @param num.out1 The number of output1 columns in the raw data file.
 #' @param num.out2 The number of output2 columns in the raw data file.
-#' @param name.out1 The prefix of output1 columns in the output file. For example, if "A" is input, "B1" is output1, "B2" is output2, then here "B1" can be used.
-#' @param name.out2 The prefix of output2 columns in the output file. For example, if "A" is input, "B1" is output1, "B2" is output2, then here "B2" can be used.
+#' @param name.out1 The prefix of "Input vs Output1" columns in the output file. 
+#' @param name.out2 The prefix of "Input vs Output2" columns in the output file. 
+#' @param name.out3 The prefix of "Output1 vs Output2" columns in the output file.
 #' @keywords mmcc
 #' @export
 #' @examples DESeq2_FisherPvalue_Twopair(filepath = "C:/Users/", rawdatafile = "rawdata.xlsx", outputname = "output", num.in = 3, num.out1 = 3, num.out2 = 3, name.out1 = "B1", name.out2 = "B2")
 
-DESeq2_FisherPvalue_Twopair <- function(filepath, rawdatafile, outputname.feature, outputname.oligo, num.in, num.out1, num.out2, name.out1, name.out2){
+DESeq2_FisherPvalue_Twopair <- function(filepath, rawdatafile, num.in, num.out1, num.out2, name.out1 = "Input vs Output1", name.out2 = "Input vs Output2", name.out3 = "Output1 vs Output2"){
   options(scipen = 999)
+  outputname.feature <- substr(rawdatafile, 1, gregexpr("\\.xlsx", rawdatafile)[[1]][1] - 1)
+  outputname.oligo <- substr(rawdatafile, 1, gregexpr("\\.xlsx", rawdatafile)[[1]][1] - 1)
   setwd(filepath)
   if ("DESeq2" %in% rownames(installed.packages()) == FALSE){
 	source("https://bioconductor.org/biocLite.R")
@@ -70,30 +73,33 @@ DESeq2_FisherPvalue_Twopair <- function(filepath, rawdatafile, outputname.featur
   res.out1 <- results(dds, contrast = c("V1", "B", "A"))
   output.out1 <- cbind(data[,2], res.out1$log2FoldChange, res.out1$lfcSE, 
                           res.out1$pvalue, res.out1$padj)
-  colnames(output.out1) <- c("Locus_Tag", "log2FoldChange", "lfcSE", "pvalue", "padj")
+  colnames(output.out1) <- c("Locus_Tag", "Input vs Output1 log2FoldChange", "Input vs Output1 lfcSE", "Input vs Output1 pvalue", "Input1 vs Output1 padj")
   output.out1 <- data.frame(output.out1)
   output.out1[,2:5] <- sapply(sapply(output.out1[,2:5], as.character), as.numeric)
-  output.out1$weight <- 1/(output.out1$lfcSE^2)
+  output.out1$Input.vs.Output1.weight <- 1/(output.out1$Input.vs.Output1.lfcSE^2)
   
   ### for output2
   res.out2 <- results(dds, contrast = c("V1", "C", "A"))
   output.out2 <- cbind(data[,2], res.out2$log2FoldChange, res.out2$lfcSE, 
                             res.out2$pvalue, res.out2$padj)
-  colnames(output.out2) <- c("Locus_Tag", "log2FoldChange", "lfcSE", "pvalue", "padj")
+  colnames(output.out2) <- c("Locus_Tag", "Input vs Output2 log2FoldChange", "Input vs Output2 lfcSE", "Input vs Output2 pvalue", "Input vs Output2 padj")
   output.out2 <- data.frame(output.out2)
   output.out2[,2:5] <- sapply(sapply(output.out2[,2:5], as.character), as.numeric)
-  output.out2$weight <- 1/(output.out2$lfcSE^2)
+  output.out2$Input.vs.Output2.weight <- 1/(output.out2$Input.vs.Output2.lfcSE^2)
   
   ### for output1 vs output2
   res.out3 <- results(dds, contrast = c("V1", "B", "C"))
   output.out3 <- cbind(data[,2], res.out3$log2FoldChange, res.out3$lfcSE, 
                             res.out3$pvalue, res.out3$padj)
-  colnames(output.out3) <- c("Locus_Tag", "log2FoldChange", "lfcSE", "pvalue", "padj")
+  colnames(output.out3) <- c("Locus_Tag", "Output1 vs Output2 log2FoldChange", "Output1 vs Output2 lfcSE", "Output1 vs Output2 pvalue", "Output1 vs Output2 padj")
   output.out3 <- data.frame(output.out3)
   output.out3[,2:5] <- sapply(sapply(output.out3[,2:5], as.character), as.numeric)
-  output.out3$weight <- 1/(output.out3$lfcSE^2)
+  output.out3$Output1.vs.Output2.weight <- 1/(output.out3$Output1.vs.Output2.lfcSE^2)
+  Oligo <- data[,1]
+  Oligo <- cbind(Oligo, output.out1, output.out2[,2:6], output.out3[,2:6])
   
-  oligo <- cbind(output.out1[])
+  write.csv(Oligo, paste0(outputname.oligo, "_oligo", "_in", as.character(num.in), "_out", as.character(num.out1), "_out", as.character(num.out2), ".csv"))
+  
   alldata <- list(data1 = output.out1, data2 = output.out2,
                   data3 = output.out3)
   
@@ -292,6 +298,6 @@ DESeq2_FisherPvalue_Twopair <- function(filepath, rawdatafile, outputname.featur
 
   result <- merge(anno, result.presum, all.x = TRUE)
 
-  write.csv(result,paste0(outputname.feature,".csv"))
+  write.csv(result,paste0(outputname.feature,"_feature", "_in", as.character(num.in), "_out", as.character(num.out1), "_out", as.character(num.out2), ".csv"))
 }
 
