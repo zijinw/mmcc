@@ -25,7 +25,7 @@
 #' @examples DESeq2_FisherPvalue_Onepair(filepath = "C:/Users/", rawdatafile = "rawdata.xlsx", outputname = "output", num.in = 3, num.out = 3, name.out = "A vs B")
 
 DESeq2_FisherPvalue_Onepair <- function(filepath, rawdatafile, outputname.feature,
-                                        outputname.oligo, num.in, num.out, name.out){
+                                        outputname.oligo, num.in, num.out, name.out = "Input vs Output"){
   options(scipen = 999)
   setwd(filepath)
   if ("DESeq2" %in% rownames(installed.packages()) == FALSE){
@@ -77,7 +77,7 @@ DESeq2_FisherPvalue_Onepair <- function(filepath, rawdatafile, outputname.featur
   output[,2:5] <- sapply(sapply(output[,2:5], as.character), as.numeric)
   output$weight <- 1/(output$lfcSE^2)
   
-  write.csv(output, output.oligo)
+  write.csv(output, paste0(output.oligo, "_in", as.character(num.in), "_out", as.character(num.out), ".csv"))
   
   df <- output
 
@@ -192,6 +192,6 @@ DESeq2_FisherPvalue_Onepair <- function(filepath, rawdatafile, outputname.featur
 
   result <- merge(anno, output2, all.x = TRUE)
 
-  write.csv(result,paste0(outputname,".csv")) ## You can replace the "output" with another name!
-}
+  write.csv(result,paste0(outputname.feature,"_in", as.character(num.in), "_out", as.character(num.out), ".csv")) ## You can replace the "output" with another name!
+  }
 

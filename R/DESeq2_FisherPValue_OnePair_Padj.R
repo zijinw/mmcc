@@ -12,7 +12,8 @@
 #' 
 #' @param filepath  The path of the raw data (excluding the data file itself). Remember to double quote the filepath.
 #' @param rawdatafile The name of the raw data file. Remember to double quote the rawdatafile, and add the ".xlsx" after the name of rawdatafile (It must be excel file)!
-#' @param outputname The name of output file you want.
+#' @param outputname.feature The name of output file for each gene you want.
+#' @param outputname.oligo The name of output file for each oligo you want.
 #' @param num.in The number of input columns in the raw data file.
 #' @param num.out The number of output columns in the raw data file.
 #' @param name.out The prefix of columns in the output. For example, "A vs B" or "B vs C", in which "A". "B" and "C" represent the names of input and output in the raw data file.
@@ -20,7 +21,8 @@
 #' @export
 #' @examples DESeq2_FisherPvalue_Onepair_Padj(filepath = "C:/Users/", rawdatafile = "rawdata.xlsx", outputname = "output", num.in = 3, num.out = 3, name.out = "A vs B")
 
-DESeq2_FisherPvalue_Onepair_Padj <- function(filepath, rawdatafile, outputname, num.in, num.out, name.out){
+DESeq2_FisherPvalue_Onepair_Padj <- function(filepath, rawdatafile,
+                                             outputname.feature, outputname.oligo, num.in, num.out, name.out){
   options(scipen = 999)
   setwd(filepath)
   if ("DESeq2" %in% rownames(installed.packages()) == FALSE){
@@ -71,6 +73,8 @@ DESeq2_FisherPvalue_Onepair_Padj <- function(filepath, rawdatafile, outputname, 
   output <- data.frame(output)
   output[,2:5] <- sapply(sapply(output[,2:5], as.character), as.numeric)
   output$weight <- 1/(output$lfcSE^2)
+  
+  write.csv(output, outputname.oligo)
   
   df <- output
 
@@ -186,6 +190,6 @@ DESeq2_FisherPvalue_Onepair_Padj <- function(filepath, rawdatafile, outputname, 
 
   result <- merge(anno,output2, all.x = TRUE)
 
-  write.csv(result,paste0(outputname,".csv")) ## You can replace the "output" with another name!
+  write.csv(result,paste0(outputname.feature,".csv")) ## You can replace the "output" with another name!
 }
 

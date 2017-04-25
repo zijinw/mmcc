@@ -12,7 +12,8 @@
 #'    
 #' @param filepath  The path of the raw data (excluding the data file itself). Remember to double quote the filepath.
 #' @param rawdatafile The name of the raw data file. Remember to double quote the rawdatafile, and add the ".xlsx" after the name of rawdatafile (It must be excel file)!
-#' @param outputname The name of output file you want.
+#' @param outputname.feature The name of output file for each gene you want.
+#' @param outputname.oligo The name of output file for each oligo you want.
 #' @param num.in The number of input columns in the raw data file.
 #' @param num.out1 The number of output1 columns in the raw data file.
 #' @param num.out2 The number of output2 columns in the raw data file.
@@ -22,7 +23,7 @@
 #' @export
 #' @examples DESeq2_FisherPvalue_Twopair(filepath = "C:/Users/", rawdatafile = "rawdata.xlsx", outputname = "output", num.in = 3, num.out1 = 3, num.out2 = 3, name.out1 = "B1", name.out2 = "B2")
 
-DESeq2_FisherPvalue_Twopair <- function(filepath, rawdatafile, outputname, num.in, num.out1, num.out2, name.out1, name.out2){
+DESeq2_FisherPvalue_Twopair <- function(filepath, rawdatafile, outputname.feature, outputname.oligo, num.in, num.out1, num.out2, name.out1, name.out2){
   options(scipen = 999)
   setwd(filepath)
   if ("DESeq2" %in% rownames(installed.packages()) == FALSE){
@@ -92,6 +93,7 @@ DESeq2_FisherPvalue_Twopair <- function(filepath, rawdatafile, outputname, num.i
   output.out3[,2:5] <- sapply(sapply(output.out3[,2:5], as.character), as.numeric)
   output.out3$weight <- 1/(output.out3$lfcSE^2)
   
+  oligo <- cbind(output.out1[])
   alldata <- list(data1 = output.out1, data2 = output.out2,
                   data3 = output.out3)
   
@@ -290,6 +292,6 @@ DESeq2_FisherPvalue_Twopair <- function(filepath, rawdatafile, outputname, num.i
 
   result <- merge(anno, result.presum, all.x = TRUE)
 
-  write.csv(result,paste0(outputname,".csv"))
+  write.csv(result,paste0(outputname.feature,".csv"))
 }
 
