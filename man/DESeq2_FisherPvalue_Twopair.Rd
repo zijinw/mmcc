@@ -42,6 +42,6 @@ This function should be used on a raw data with the following layout:
    of columns in each output can be any number.
 }
 \examples{
-DESeq2_FisherPvalue_Twopair(filepath = "C:/Users/", rawdatafile = "rawdata.xlsx", outputname = "output", num.in = 3, num.out1 = 3, num.out2 = 3, name.out1 = "B1", name.out2 = "B2")
+DESeq2_FisherPvalue_Twopair(filepath = "C:/Users/", rawdatafile = "rawdata.xlsx", outputname = "output", num.in = 3, num.out1 = 3, num.out2 = 3, name.out1 = "Input vs Output1", name.out2 = "Input vs Output2", name.out3 = "Output1 vs Output2")
 }
 \keyword{mmcc}
