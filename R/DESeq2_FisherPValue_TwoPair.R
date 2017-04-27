@@ -22,7 +22,7 @@
 #' @param name.out3 The prefix of "Output1 vs Output2" columns in the output file.
 #' @keywords mmcc
 #' @export
-#' @examples DESeq2_FisherPvalue_Twopair(filepath = "C:/Users/", rawdatafile = "rawdata.xlsx", outputname = "output", num.in = 3, num.out1 = 3, num.out2 = 3, name.out1 = "B1", name.out2 = "B2")
+#' @examples DESeq2_FisherPvalue_Twopair(filepath = "C:/Users/", rawdatafile = "rawdata.xlsx", outputname = "output", num.in = 3, num.out1 = 3, num.out2 = 3, name.out1 = "Input vs Output1", name.out2 = "Input vs Output2", name.out3 = "Output1 vs Output2")
 
 DESeq2_FisherPvalue_Twopair <- function(filepath, rawdatafile, num.in, num.out1, num.out2, name.out1 = "Input vs Output1", name.out2 = "Input vs Output2", name.out3 = "Output1 vs Output2"){
   options(scipen = 999)
@@ -73,11 +73,25 @@ DESeq2_FisherPvalue_Twopair <- function(filepath, rawdatafile, num.in, num.out1,
   res.out1 <- results(dds, contrast = c("V1", "B", "A"))
   output.out1 <- cbind(data[,2], res.out1$log2FoldChange, res.out1$lfcSE, 
                           res.out1$pvalue, res.out1$padj)
-  colnames(output.out1) <- c("Locus_Tag", "Input vs Output1 log2FoldChange", "Input vs Output1 lfcSE", "Input vs Output1 pvalue", "Input1 vs Output1 padj")
+  colnames(output.out1) <- c("Locus_Tag", "Input vs Output1 log2FoldChange", "Input vs Output1 lfcSE", "Input vs Output1 pvalue", "Input vs Output1 padj")
   output.out1 <- data.frame(output.out1)
   output.out1[,2:5] <- sapply(sapply(output.out1[,2:5], as.character), as.numeric)
   output.out1$Input.vs.Output1.weight <- 1/(output.out1$Input.vs.Output1.lfcSE^2)
   
+  #########################
+  Locus_Tag <- output.out1$Locus_Tag
+  weightFC1 <- data.frame(output.out1$Input.vs.Output1.log2FoldChange, output.out1$Input.vs.Output1.pvalue, output.out1$Input.vs.Output1.padj)
+  weightFC1$PvalueFC <- (1/weightFC1$output.out1.Input.vs.Output1.pvalue) * weightFC1$output.out1.Input.vs.Output1.log2FoldChange
+  weightFC1$PvalueAFC <- (1/weightFC1$output.out1.Input.vs.Output1.padj) * weightFC1$output.out1.Input.vs.Output1.log2FoldChange
+  weightFC1 <- weightFC1[,c(4,5)]
+  weightFC1[is.na(weightFC1)] <- 0
+  weightFC1 <- cbind(Locus_Tag, weightFC1)
+  weightFC1 <- split(weightFC1, weightFC1$Locus_Tag)
+  PFC.1 <- unlist(lapply(weightFC1, function(x) sum(x[,2])))
+  APFC.1 <- unlist(lapply(weightFC1, function(x) sum(x[,3])))
+  FC.1 <- cbind(PFC.1, APFC.1)
+  rownames(FC.1) <- c(1:nrow(FC.1))
+  #####################################
   ### for output2
   res.out2 <- results(dds, contrast = c("V1", "C", "A"))
   output.out2 <- cbind(data[,2], res.out2$log2FoldChange, res.out2$lfcSE, 
@@ -87,6 +101,20 @@ DESeq2_FisherPvalue_Twopair <- function(filepath, rawdatafile, num.in, num.out1,
   output.out2[,2:5] <- sapply(sapply(output.out2[,2:5], as.character), as.numeric)
   output.out2$Input.vs.Output2.weight <- 1/(output.out2$Input.vs.Output2.lfcSE^2)
   
+  #########################
+  weightFC2 <- data.frame(output.out2$Input.vs.Output2.log2FoldChange, output.out2$Input.vs.Output2.pvalue, output.out2$Input.vs.Output2.padj)
+  weightFC2$PvalueFC <- (1/weightFC2$output.out2.Input.vs.Output2.pvalue) * weightFC2$output.out2.Input.vs.Output2.log2FoldChange
+  weightFC2$PvalueAFC <- (1/weightFC2$output.out2.Input.vs.Output2.padj) * weightFC2$output.out2.Input.vs.Output2.log2FoldChange
+  weightFC2 <- weightFC2[,c(4,5)]
+  weightFC2[is.na(weightFC2)] <- 0
+  weightFC2 <- cbind(Locus_Tag, weightFC2)
+  weightFC2 <- split(weightFC2, weightFC2$Locus_Tag)
+  PFC.2 <- unlist(lapply(weightFC2, function(x) sum(x[,2])))
+  APFC.2 <- unlist(lapply(weightFC2, function(x) sum(x[,3])))
+  FC.2 <- cbind(PFC.2, APFC.2)
+  rownames(FC.2) <- c(1:nrow(FC.2))
+  #####################################
+  
   ### for output1 vs output2
   res.out3 <- results(dds, contrast = c("V1", "B", "C"))
   output.out3 <- cbind(data[,2], res.out3$log2FoldChange, res.out3$lfcSE, 
@@ -95,6 +123,21 @@ DESeq2_FisherPvalue_Twopair <- function(filepath, rawdatafile, num.in, num.out1,
   output.out3 <- data.frame(output.out3)
   output.out3[,2:5] <- sapply(sapply(output.out3[,2:5], as.character), as.numeric)
   output.out3$Output1.vs.Output2.weight <- 1/(output.out3$Output1.vs.Output2.lfcSE^2)
+  
+  #########################
+  weightFC3 <- data.frame(output.out3$Output1.vs.Output2.log2FoldChange, output.out3$Output1.vs.Output2.pvalue, output.out3$Output1.vs.Output2.padj)
+  weightFC3$PvalueFC <- (1/weightFC3$output.out3.Output1.vs.Output2.pvalue) * weightFC3$output.out3.Output1.vs.Output2.log2FoldChange
+  weightFC3$PvalueAFC <- (1/weightFC3$output.out3.Output1.vs.Output2.padj) * weightFC3$output.out3.Output1.vs.Output2.log2FoldChange
+  weightFC3 <- weightFC3[,c(4,5)]
+  weightFC3[is.na(weightFC3)] <- 0
+  weightFC3 <- cbind(Locus_Tag, weightFC3)
+  weightFC3 <- split(weightFC3, weightFC3$Locus_Tag)
+  PFC.3 <- unlist(lapply(weightFC3, function(x) sum(x[,2])))
+  APFC.3 <- unlist(lapply(weightFC3, function(x) sum(x[,3])))
+  FC.3 <- cbind(PFC.3, APFC.3)
+  rownames(FC.3) <- c(1:nrow(FC.3))
+  #####################################
+  
   Oligo <- data[,1]
   Oligo <- cbind(Oligo, output.out1, output.out2[,2:6], output.out3[,2:6])
   
@@ -249,7 +292,7 @@ DESeq2_FisherPvalue_Twopair <- function(filepath, rawdatafile, num.in, num.out1,
   
   colnames(anno) <- c("Locus_Tag", paste(name.out1,"Fisher"), "Tail", paste(name.out1,"Z test"), "Tail", paste(name.out1,"Z with weight"), "Tail"
                       , paste(name.out2,"Fisher"), "Tail", paste(name.out2,"Z test"), "Tail", paste(name.out2,"Z with weight"), "Tail"
-                      , paste(name.out1,"vs",name.out2,"Fisher"), "Tail", paste(name.out1,"vs",name.out2,"Z test"), "Tail", paste(name.out1,"vs",name.out2,"Z with weight"), "Tail")
+                      , paste(name.out3,"Fisher"), "Tail", paste(name.out3,"Z test"), "Tail", paste(name.out3,"Z with weight"), "Tail")
   
   #### Now we have get the result of input vs output1, input vs output2, output1
   #### vs output2 for every gene
@@ -295,7 +338,14 @@ DESeq2_FisherPvalue_Twopair <- function(filepath, rawdatafile, num.in, num.out1,
   
   result.presum <- cbind(output2.out1, output2.out2, output2.out3)
   result.presum <- result.presum[,c(1:5,7:10,12:15)]
-
+  
+  Locus_Tag <- anno$Locus_Tag
+  
+  anno <- cbind( Locus_Tag, FC.1, anno[,2:7], FC.2, anno[,8:13], FC.3, anno[,14:19])
+  names(anno)[2:3] <- c("Input vs Output1 weighted p-value based log2FoldChange", "Input vs Output1 weighted adjusted p-value based log2FoldChange")
+  names(anno)[10:11] <- c("Input vs Output2 weighted p-value based log2FoldChange", "Input vs Output2 weighted adjusted p-value based log2FoldChange")
+  names(anno)[18:19] <- c("Output1 vs Output2 weighted p-value based log2FoldChange", "Output1 vs Output2 weighted adjusted p-value based log2FoldChange")
+  
   result <- merge(anno, result.presum, all.x = TRUE)
 
   write.csv(result,paste0(outputname.feature,"_feature", "_in", as.character(num.in), "_out", as.character(num.out1), "_out", as.character(num.out2), ".csv"))

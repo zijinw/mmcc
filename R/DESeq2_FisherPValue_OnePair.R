@@ -82,6 +82,21 @@ DESeq2_FisherPvalue_Onepair <- function(filepath, rawdatafile,
   
   write.csv(output.oligo, paste0(outputname.oligo, "_oligo", "_in", as.character(num.in), "_out", as.character(num.out), ".csv"))
   
+  ######
+  weightFC <- data.frame(output$log2FoldChange, output$pvalue, output$padj)
+  weightFC$PvalueFC <- (1/weightFC$output.pvalue) * weightFC$output.log2FoldChange
+  weightFC$PvalueAFC <- (1/weightFC$output.padj) * weightFC$output.log2FoldChange
+  weightFC <- weightFC[,c(4,5)]
+  weightFC[is.na(weightFC)] <- 0
+  weightFC <- cbind(output$Locus_Tag, weightFC)
+  colnames(weightFC) <- c("Locus_Tag", "PvalueFC", "PvalueAFC")
+  weightFC <- split(weightFC, weightFC$Locus_Tag)
+  PFC <- unlist(lapply(weightFC, function(x) sum(x[,2])))
+  APFC <- unlist(lapply(weightFC, function(x) sum(x[,3])))
+  FC <- cbind(PFC, APFC)
+  rownames(FC) <- c(1:nrow(FC))
+  ######
+  
   df <- output
 
   df$pvalue <- df$pvalue / 2
@@ -193,6 +208,8 @@ DESeq2_FisherPvalue_Onepair <- function(filepath, rawdatafile,
   output2 <- data.frame(output2)
   output2[,2:5] <- sapply(sapply(output2[,2:5], as.character), as.numeric)
 
+  anno <- cbind(anno[,1], FC, anno[,2:length(anno)])
+  colnames(anno) <- c("Locus_Tag", "weighted p-value based log2 Fold Change", "weighted adjusted p-value based log2 Fold Change", "Input vs Output Fisher", "Tail", "Input vs Output Z test", "Tail", "Input vs Output Z with weight", "Tail")
   result <- merge(anno, output2, all.x = TRUE)
 
   write.csv(result,paste0(outputname.feature,"_feature", "_in", as.character(num.in), "_out", as.character(num.out), ".csv")) ## You can replace the "output" with another name!

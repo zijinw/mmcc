@@ -79,6 +79,21 @@ DESeq2_FisherPvalue_Onepair_Padj <- function(filepath, rawdatafile,
   
   write.csv(output.oligo, paste0(outputname.oligo, "_oligo", "_in", as.character(num.in), "_out", as.character(num.out), ".csv"))
   
+  ######
+  weightFC <- data.frame(output$log2FoldChange, output$pvalue, output$padj)
+  weightFC$PvalueFC <- (1/weightFC$output.pvalue) * weightFC$output.log2FoldChange
+  weightFC$PvalueAFC <- (1/weightFC$output.padj) * weightFC$output.log2FoldChange
+  weightFC <- weightFC[,c(4,5)]
+  weightFC[is.na(weightFC)] <- 0
+  weightFC <- cbind(output$Locus_Tag, weightFC)
+  colnames(weightFC) <- c("Locus_Tag", "PvalueFC", "PvalueAFC")
+  weightFC <- split(weightFC, weightFC$Locus_Tag)
+  PFC <- unlist(lapply(weightFC, function(x) sum(x[,2])))
+  APFC <- unlist(lapply(weightFC, function(x) sum(x[,3])))
+  FC <- cbind(PFC, APFC)
+  rownames(FC) <- c(1:nrow(FC))
+  ######
+  
   df <- output
 
   df$padj <- df$padj / 2
