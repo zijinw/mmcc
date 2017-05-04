@@ -248,7 +248,7 @@ DESeq2_FisherPvalue_Onepair <- function(filepath, rawdatafile,
   output2[,2:5] <- sapply(sapply(output2[,2:5], as.character), as.numeric)
   
   Locus_Tag <- anno$Locus_Tag
-  anno <- cbind(Locus_Tag, FC1, FC.1_1minp, anno[,2:length(anno)])
+  anno <- cbind(Locus_Tag, FC.1, FC.1_1minp, anno[,2:length(anno)])
   names(anno)[2:3] <- c("Input vs Output1 weighted (1/p) based log2FoldChange", "Input vs Output1 weighted adjusted (1/p) based log2FoldChange")
   names(anno)[4:5] <- c("Input vs Output1 weighted (1-p) based log2FoldChange", "Input vs Output1 weighted adjusted (1-p) based log2FoldChange")
   result <- merge(anno, output2, all.x = TRUE)
