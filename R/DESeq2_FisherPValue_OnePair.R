@@ -83,18 +83,57 @@ DESeq2_FisherPvalue_Onepair <- function(filepath, rawdatafile,
   write.csv(output.oligo, paste0(outputname.oligo, "_oligo", "_in", as.character(num.in), "_out", as.character(num.out), ".csv"))
   
   ######
-  weightFC <- data.frame(output$log2FoldChange, output$pvalue, output$padj)
-  weightFC$PvalueFC <- (1/weightFC$output.pvalue) * weightFC$output.log2FoldChange
-  weightFC$PvalueAFC <- (1/weightFC$output.padj) * weightFC$output.log2FoldChange
-  weightFC <- weightFC[,c(4,5)]
-  weightFC[is.na(weightFC)] <- 0
-  weightFC <- cbind(output$Locus_Tag, weightFC)
-  colnames(weightFC) <- c("Locus_Tag", "PvalueFC", "PvalueAFC")
-  weightFC <- split(weightFC, weightFC$Locus_Tag)
-  PFC <- unlist(lapply(weightFC, function(x) sum(x[,2])))
-  APFC <- unlist(lapply(weightFC, function(x) sum(x[,3])))
-  FC <- cbind(PFC, APFC)
-  rownames(FC) <- c(1:nrow(FC))
+  ## 1/p
+  weightFC1 <- data.frame(output.out[,c(1,2,4,5)])
+  weightFC1 <- na.omit(weightFC1)
+  weightFC1 <- split(weightFC1, weightFC1[,1])
+  
+  weight.fc <- function (x){
+    p.sum <- sum(1/x[,3])
+    p.adj.sum <- sum(1/x[,4])
+    x$PvalueFC <- ((1/x[,3]) / p.sum) * x[,2]
+    x$PvalueAFC <- ((1/x[,4]) / p.adj.sum) * x[,2]
+    return (x)
+  }
+  
+  weightFC1 <- lapply(weightFC1, weight.fc)
+  
+  helper <- function(x) {
+    return (x[,5:6])
+  }
+  
+  weightFC1 <- lapply(weightFC1, helper)
+  
+  PFC.1 <- unlist(lapply(weightFC1, function(x) sum(x[,1])))
+  APFC.1 <- unlist(lapply(weightFC1, function(x) sum(x[,2])))
+  
+  FC.1 <- cbind(PFC.1, APFC.1)
+  rownames(FC.1) <- c(1:nrow(FC.1))
+  
+  ### 1 - p
+  
+  weightFC1_1minp <- data.frame(output.out[,c(1,2,4,5)])
+  weightFC1_1minp <- na.omit(weightFC1_1minp)
+  weightFC1_1minp <- split(weightFC1_1minp, weightFC1_1minp[,1])
+  
+  weight.fc_1minp <- function (x){
+    p.sum <- sum(1 - x[,3])
+    p.adj.sum <- sum(1 - x[,4])
+    x$PvalueFC_1minp <- ((1 - x[,3]) / p.sum) * x[,2]
+    x$PvalueAFC_1minp <- ((1 - x[,4]) / p.adj.sum) * x[,2]
+    return (x)
+  }
+  
+  weightFC1_1minp <- lapply(weightFC1_1minp, weight.fc_1minp)
+  
+  weightFC1_1minp <- lapply(weightFC1_1minp, helper)
+  
+  PFC.1_1minp <- unlist(lapply(weightFC1_1minp, function(x) sum(x[,1])))
+  APFC.1_1minp <- unlist(lapply(weightFC1_1minp, function(x) sum(x[,2])))
+  
+  FC.1_1minp <- cbind(PFC.1_1minp, APFC.1_1minp)
+  rownames(FC.1_1minp) <- c(1:nrow(FC.1_1minp))
+  
   ######
   
   df <- output
@@ -207,9 +246,11 @@ DESeq2_FisherPvalue_Onepair <- function(filepath, rawdatafile,
   colnames(output2) <- c("Locus_Tag", paste(name.out,"log2FoldChange"), paste(name.out,"lfcSE"), paste(name.out,"pvalue"), paste(name.out,"padj"))
   output2 <- data.frame(output2)
   output2[,2:5] <- sapply(sapply(output2[,2:5], as.character), as.numeric)
-
-  anno <- cbind(anno[,1], FC, anno[,2:length(anno)])
-  colnames(anno) <- c("Locus_Tag", "weighted p-value based log2 Fold Change", "weighted adjusted p-value based log2 Fold Change", "Input vs Output Fisher", "Tail", "Input vs Output Z test", "Tail", "Input vs Output Z with weight", "Tail")
+  
+  Locus_Tag <- anno$Locus_Tag
+  anno <- cbind(Locus_Tag, FC1, FC.1_1minp, anno[,2:length(anno)])
+  names(anno)[2:3] <- c("Input vs Output1 weighted (1/p) based log2FoldChange", "Input vs Output1 weighted adjusted (1/p) based log2FoldChange")
+  names(anno)[4:5] <- c("Input vs Output1 weighted (1-p) based log2FoldChange", "Input vs Output1 weighted adjusted (1-p) based log2FoldChange")
   result <- merge(anno, output2, all.x = TRUE)
 
   write.csv(result,paste0(outputname.feature,"_feature", "_in", as.character(num.in), "_out", as.character(num.out), ".csv")) ## You can replace the "output" with another name!
