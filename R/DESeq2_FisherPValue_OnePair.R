@@ -84,7 +84,7 @@ DESeq2_FisherPvalue_Onepair <- function(filepath, rawdatafile,
   
   ######
   ## 1/p
-  weightFC1 <- data.frame(output.out[,c(1,2,4,5)])
+  weightFC1 <- data.frame(output[,c(1,2,4,5)])
   weightFC1 <- na.omit(weightFC1)
   weightFC1 <- split(weightFC1, weightFC1[,1])
   
@@ -112,7 +112,7 @@ DESeq2_FisherPvalue_Onepair <- function(filepath, rawdatafile,
   
   ### 1 - p
   
-  weightFC1_1minp <- data.frame(output.out[,c(1,2,4,5)])
+  weightFC1_1minp <- data.frame(output[,c(1,2,4,5)])
   weightFC1_1minp <- na.omit(weightFC1_1minp)
   weightFC1_1minp <- split(weightFC1_1minp, weightFC1_1minp[,1])
   
