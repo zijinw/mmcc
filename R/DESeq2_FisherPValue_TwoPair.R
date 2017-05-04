@@ -51,6 +51,7 @@ DESeq2_FisherPvalue_Twopair <- function(filepath, rawdatafile, num.in, num.out1,
   }
 
   data <- read_excel(rawdatafile, col_names = TRUE)
+  data <- data[colSums(!is.na(data)) > 0]
   data <- as.data.frame(data)
   data$FeatureID <- paste0(as.character(data[,1]),"_", as.character(data$Locus_Tag))
   data <- data[,c(1,2,ncol(data),4:ncol(data)-1)]
