@@ -285,8 +285,8 @@ DESeq2_FisherPvalue_Twopair <- function(filepath, rawdatafile, num.in, num.out1,
 				paste(name.out2,"Z with weight (trans p with fold change <0)"))
     }else if (i == 3){
 	colnames(p.df[[i]]) <- c("Locus_Tag", paste(name.out1,"vs",name.out2,"Fisher (trans p with fold change >0)"), paste(name.out1,"vs",name.out2,"Z (trans p with fold change >0)"),
-				paste(name.out1,"vs",name.out2,"Z with weight (trans p with fold change >0)"), paste(name.out1,"vs",name.out2,"Fisher (trans p with fold change <0)"), paste(name.out1,"vs",name.out2,"Z (trans p with fold change <0)"),
-				paste(name.out1,"vs",name.out2,"Z with weight (trans p with fold change <0)"))
+				paste(name.out3,"Z with weight (trans p with fold change >0)"), paste(name.out3,"Fisher (trans p with fold change <0)"), paste(name.out3,"Z (trans p with fold change <0)"),
+				paste(name.out3,"Z with weight (trans p with fold change <0)"))
     }
   }
   anno <- as.data.frame(unique(data[,2]))
