@@ -4,7 +4,7 @@
 #' 
 #' This function should be used on a raw data with the following layout:
 #' 1. The first three columns must be "Feature", "Locus_Tag", "Strand"
-#'    Here "Feture" is like "A000XXX". Be sure that the colnames are right!
+#'    Here "Feture" can be barcode (preferred) or anything that unique. Be sure that the colnames are right!
 #' 2. The next columns are for input, output1, output2 successively. 
 #'    Note that there is no constraint for the names of these input and
 #'    output columns, but there can only be 2 kinds of outputs. The number
@@ -413,7 +413,7 @@ DESeq2_FisherPvalue_Twopair <- function(filepath, rawdatafile, num.in, num.out1,
 
   output2.out3 <- cbind(data2[,1], res2.bc$log2FoldChange, res2.bc$lfcSE, 
                           res2.bc$pvalue, res2.bc$padj)
-  colnames(output2.out3) <- c("Locus_Tag", paste(name.out1, "vs", name.out2,"log2FoldChange"),  paste(name.out1, "vs", name.out2,"lfcSE"),  paste(name.out1, "vs", name.out2,"pvalue"),  paste(name.out1, "vs", name.out2,"padj"))
+  colnames(output2.out3) <- c("Locus_Tag", paste(name.out3,"log2FoldChange"),  paste(name.out3,"lfcSE"),  paste(name.out3,"pvalue"),  paste(name.out3,"padj"))
   output2.out3 <- data.frame(output2.out3)
   output2.out3[,2:5] <- sapply(sapply(output2.out3[,2:5], as.character), as.numeric)
   
