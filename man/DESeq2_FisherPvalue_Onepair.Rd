@@ -27,7 +27,7 @@ This function is used to:
 \details{
 This function should be used on a raw data with the following layout:
 1. The first three columns must be "Feature", "Locus_Tag", "Strand"
-   Here "Feture" is like "A000XXX". Be sure that the colnames are right!
+   Here "Feture" can be barcode (preferred) or anything that unique. Be sure that the colnames are right!
 2. The next columns are for input and output successively. 
    Note that there is no constraint for the names of these input and
    output columns, but there can only be 1 kind of output. The number

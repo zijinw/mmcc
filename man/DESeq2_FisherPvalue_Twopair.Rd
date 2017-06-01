@@ -35,7 +35,7 @@ This function is a variation of function \link[mmcc]{DESeq2_FisherPvalue_Onepair
 \details{
 This function should be used on a raw data with the following layout:
 1. The first three columns must be "Feature", "Locus_Tag", "Strand"
-   Here "Feture" is like "A000XXX". Be sure that the colnames are right!
+   Here "Feture" can be barcode (preferred) or anything that unique. Be sure that the colnames are right!
 2. The next columns are for input, output1, output2 successively. 
    Note that there is no constraint for the names of these input and
    output columns, but there can only be 2 kinds of outputs. The number
